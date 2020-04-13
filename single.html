@@ -1,0 +1,123 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Rapid Fire</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, target-densitydpi=medium-dpi, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="robots" content="noindex, nofollow" />
+<style type="text/css">
+html { 
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+body { 
+  font-family: Tahoma, Geneva, sans-serif;
+  font-size: 10px;
+  color: #414141;
+  background-color: #efefef;
+}
+#hit-zone { 
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+.count {
+  font-size: 300px;
+  text-align: center;
+  position: absolute;
+  width: 632px;
+  height: 362px;
+  top: calc(50% - 181px);
+  left: calc(50% - 316px);
+
+}
+
+#timer { 
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  font-size: 3em;
+}
+.debug {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  min-width: 100px;
+  padding: 5px;
+  font-size: 1em;
+}
+
+.debug > p {
+  margin: 0 0 1em;
+}
+
+@media screen and (max-width: 632px) {
+  .count { 
+    font-size: 100px; 
+    width: 210px;
+    height: 120px;
+    top: calc(50% - 60px);
+    left: calc(50% - 105px);
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="timer"></div>
+<div id="hit-zone">
+  <div class="count">Start</div>
+</div>
+<div class="debug">
+  <p>Rapid Fire version 1.0 <br /> Developed by Chester Militante</p>
+</div>
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script>
+var $hitZone = $("#hit-zone > .count");
+var $timer = $("#timer");
+var timer = 100;
+var counter = 0;
+var timer_countdown;
+var notStarted = true;
+function timer_countdown_init(){ 
+	timer_countdown = setTimeout(function(){ 
+		if( timer > 0) {
+			timer--;
+			$timer.html((timer/10).toFixed(1));
+			timer_countdown_init();
+		}
+		else clearTimeout(timer_countdown);
+	}, 100);
+}
+$hitZone.on("touchstart click", startGame );
+
+
+function startGame(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	if (notStarted) {
+	  timer_countdown_init();
+		notStarted = false;
+	}
+	if (timer > 0) {
+		counter++;
+		$hitZone.html(counter);
+	}
+}
+
+</script>
+</body>
+</html>
