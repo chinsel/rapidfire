@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Rapid Fire Versus v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, target-densitydpi=medium-dpi, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="robots" content="noindex, nofollow" />
+<style type="text/css">
+html { 
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+body { 
+  font-family: Tahoma, Geneva, sans-serif;
+  font-size: 10px;
+  color: #414141;
+  background-color: #efefef;
+}
+.hit-zone { 
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  cursor: default;
+  transition: .5s;
+  -webkit-transition: .5s;
+}
+
+.timer { 
+  position: absolute;
+  padding: 5px;
+  font-size: 30px;
+  color: #fff;
+  z-index:10;
+}
+
+#player1 { 
+  left: 0;
+  background-color: #800000;
+
+}
+
+#player2 {
+  right: 0;
+  background-color: #000080;
+}
+
+#player1 > .timer {
+  bottom: 5px;
+  right: 0;
+}
+
+#player2 > .timer {
+  top: 5px;
+  left: 0;
+}
+#player1 > .count,
+#player1 > .timer {
+  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+}
+#player2 > .count,
+#player2 > .timer {
+  transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+}
+
+.count { 
+  text-align: center;
+  width: 450px;
+  height: 120px;
+  position: absolute;
+  top: calc(50% - 60px);
+  left: calc(50% - 225px);
+  font-size: 100px;
+  color: #fff;
+}
+
+.debug {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  min-width: 100px;
+  padding: 5px;
+  font-size: 1em;
+  color: #fff
+}
+
+.debug > p {
+  margin: 0 0 1em;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<div id="player1" class="hit-zone">
+  <div class="count">Start</div>
+  <div class="timer"></div>
+</div>
+<div id="player2" class="hit-zone">
+  <div class="count">Start</div>
+  <div class="timer"></div>
+</div>
+<div id="replay">
+
+</div>
+<div class="debug">
+  <p>Rapid Fire Versus version 2.0 <br /> Developed by Chester Militante</p>
+</div>
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script>
+var $hitZone = $(".hit-zone");
+var $count = $(".count");
+var $p1 = $("#player1");
+var $p2 = $("#player2");
+var $timer = $(".timer");
+var timer = 100;
+var p1Counter = 0;
+var p2Counter = 0;
+
+var timer_countdown;
+var notStarted = true;
+function timer_countdown_init(){ 
+	timer_countdown = setTimeout(function(){ 
+		if( timer > 0) {
+			timer--;
+			$timer.html((timer/10).toFixed(1));
+			timer_countdown_init();
+		}
+		else clearTimeout(timer_countdown);
+	}, 100);
+}
+
+$hitZone.on("touchstart click", startGame );
+
+function startGame(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	var counter = 0;
+	if (notStarted) {
+		notStarted = false;
+	}
+	$count.html("Go!");
+	if (timer > 0) {
+		if ( $(this).is("#player1") ){
+			p1Counter++;
+		}
+		if ( $(this).is("#player2") ){
+		  p2Counter++;
+			
+		}
+		compare(p1Counter, p2Counter, $p1, $p2);
+		compare(p2Counter, p1Counter, $p2, $p1);
+	}
+}
+
+function compare( count1, count2, $lead, $loss) {
+	var diff = count1 - count2;
+	if( diff == 0) {
+		$lead.css("width","50%");
+		$loss.css("width","50%");
+	}
+	else if( diff == 2 ) {
+		$lead.css("width","60%");
+		$loss.css("width","40%");
+	}
+	else if( diff == 4 ){
+		$lead.css("width","70%");
+		$loss.css("width","30%");
+	}
+	else if( diff == 6 ){
+		$lead.css("width","80%");
+		$loss.css("width","20%");
+	}
+	else if( diff == 8 ){
+		$lead.css("width","80%");
+		$loss.css("width","20%");
+	}
+	else if( diff >= 10 && diff < 15 ){
+		$lead.css("width","90%");
+		$loss.css("width","10%");
+		$(".count", $loss).html("");
+	}
+	else if( diff >= 15 ){
+		$lead.css("width","100%");
+		$loss.css("width","0%");
+		$(".count", $lead).html("Winner!"); 
+		$(".count", $loss).html(""); 
+	}
+	
+}
+
+</script>
+</body>
+</html>

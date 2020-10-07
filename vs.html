@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Rapid Fire Versus</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, target-densitydpi=medium-dpi, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="robots" content="noindex, nofollow" />
+<style type="text/css">
+html { 
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+body { 
+  font-family: Tahoma, Geneva, sans-serif;
+  font-size: 10px;
+  color: #414141;
+  background-color: #efefef;
+}
+.hit-zone { 
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+.timer { 
+  position: absolute;
+  padding: 5px;
+  font-size: 30px;
+  color: #fff;
+  z-index:10;
+}
+
+#player1 { 
+  left: 0;
+  background-color: #800000;
+
+}
+
+#player2 {
+  right: 0;
+  background-color: #000080;
+}
+
+#player1 > .timer {
+  bottom: 5px;
+  right: 0;
+}
+
+#player2 > .timer {
+  top: 5px;
+  left: 0;
+}
+#player1 > .count,
+#player1 > .timer {
+  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+}
+#player2 > .count,
+#player2 > .timer {
+  transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+}
+
+.count { 
+  text-align: center;
+  width: 450px;
+  height: 240px;
+  position: absolute;
+  top: calc(50% - 120px);
+  left: calc(50% - 225px);
+  font-size: 200px;
+  color: #fff;
+}
+
+.debug {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  min-width: 100px;
+  padding: 5px;
+  font-size: 1em;
+  color: #fff
+}
+
+.debug > p {
+  margin: 0 0 1em;
+}
+
+@media screen and (max-height: 450px) {
+  .count { 
+    font-size: 100px;
+    height: 120px; 
+    top: calc(50% - 60px);
+  }
+}
+</style>
+</head>
+
+<body>
+
+
+<div id="player1" class="hit-zone">
+  <div class="count">Start</div>
+  <div class="timer"></div>
+</div>
+<div id="player2" class="hit-zone">
+  <div class="count">Start</div>
+  <div class="timer"></div>
+</div>
+
+<div class="debug">
+  <p>Rapid Fire Versus version 1.0 <br /> Developed by Chester Militante</p>
+</div>
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script>
+var $hitZone = $(".hit-zone");
+var $p1 = $("#player1 > .count");
+var $p2 = $("#player2 > .count");
+var $timer = $(".timer");
+var timer = 100;
+var p1Counter = 0;
+var p2Counter = 0;
+
+var timer_countdown;
+var notStarted = true;
+function timer_countdown_init(){ 
+	timer_countdown = setTimeout(function(){ 
+		if( timer > 0) {
+			timer--;
+			$timer.html((timer/10).toFixed(1));
+			timer_countdown_init();
+		}
+		else clearTimeout(timer_countdown);
+	}, 100);
+}
+
+$hitZone.on("touchstart click", startGame );
+
+function startGame(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	var counter = 0;
+	if (notStarted) {
+	  timer_countdown_init();
+		notStarted = false;
+	}
+	if (timer > 0) {
+		if ( $(this).is("#player1") ){
+		  p1Counter++;
+			$p1.html(p1Counter);
+		}
+		if ( $(this).is("#player2") ){
+		  p2Counter++;
+			$p2.html(p2Counter);
+		}
+		
+	}
+}
+
+</script>
+</body>
+</html>
